@@ -32,8 +32,20 @@ func (c *Context) Delete(indexName string, documentType string, documentID strin
 }
 
 //DeleteByQuery to delete elasticsearch document by specific query
+//Reference: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-delete-by-query.html
 func (c *Context) DeleteByQuery(indexName string, query map[string]interface{}) bool {
 	url := "/" + indexName + "/_delete_by_query"
+	return deleteByQueryProcess(c, url, query)
+}
+
+//DeleteByQueryProceedConflict to delete elasticsearch document by specific query with proceed conflict
+//Reference: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-delete-by-query.html
+func (c *Context) DeleteByQueryProceedConflict(indexName string, query map[string]interface{}) bool {
+	url := "/" + indexName + "/_delete_by_query?conflicts=proceed"
+	return deleteByQueryProcess(c, url, query)
+}
+
+func deleteByQueryProcess(c *Context, url string, query map[string]interface{}) bool {
 	b, _ := json.Marshal(query)
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 	if err != nil {

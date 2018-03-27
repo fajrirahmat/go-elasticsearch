@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+//CreateIndexResponse response type of index creation process
 type CreateIndexResponse struct {
 	Shards  Shard  `json:"_shards"`
 	Index   string `json:"_index"`
@@ -21,12 +22,15 @@ type CreateIndexResponse struct {
 	Result  string `json:"result"`
 }
 
+//Shard part of response of index creation process
 type Shard struct {
 	Total      int `json:"total"`
 	Failed     int `json:"failed"`
 	SuccessFul int `json:"successful"`
 }
 
+//Info Reponse of elasticsearch root index.
+//curl -XGET http://localhost:9200/
 type Info struct {
 	Name        string  `json:"name"`
 	ClusterName string  `json:"cluster_name"`
@@ -35,6 +39,7 @@ type Info struct {
 	TagLine     string  `json:"tagline"`
 }
 
+//Version part of info response
 type Version struct {
 	Number        string    `json:"number"`
 	BuildHash     string    `json:"build_hash"`
