@@ -1,0 +1,15 @@
+{
+	"ImportPath": "github.com/fajrirahmat/go-elasticsearch",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/olivere/balancers",
+			"Rev": "2c59b7aaadfde386e35fe459f22924192643404f"
+		},
+		{
+			"ImportPath": "github.com/olivere/balancers/roundrobin",
+			"Rev": "2c59b7aaadfde386e35fe459f22924192643404f"
+		}
+	]
+}

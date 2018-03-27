@@ -13,7 +13,7 @@ type Context struct {
 	C *http.Client
 }
 
-//New create balancer if Elasticsearch has more than one client node
+//New create balancer. it can register more than one client node of elasticsearch
 func New(urls ...string) *Context {
 	balancer, err := roundrobin.NewBalancerFromURL(urls...)
 	if err != nil {
