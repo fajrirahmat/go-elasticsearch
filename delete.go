@@ -33,15 +33,15 @@ func (c *Context) Delete(indexName string, documentType string, documentID strin
 
 //DeleteByQuery to delete elasticsearch document by specific query
 //Reference: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-delete-by-query.html
-func (c *Context) DeleteByQuery(indexName string, query map[string]interface{}) bool {
-	url := "/" + indexName + "/_delete_by_query"
+func (c *Context) DeleteByQuery(indexName []string, query map[string]interface{}) bool {
+	url := generateDeleteByQueryURLString(indexName)
 	return deleteByQueryProcess(c, url, query)
 }
 
 //DeleteByQueryProceedConflict to delete elasticsearch document by specific query with proceed conflict
 //Reference: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docs-delete-by-query.html
-func (c *Context) DeleteByQueryProceedConflict(indexName string, query map[string]interface{}) bool {
-	url := "/" + indexName + "/_delete_by_query?conflicts=proceed"
+func (c *Context) DeleteByQueryProceedConflict(indexName []string, query map[string]interface{}) bool {
+	url := generateURLStringWithProceedConflict(generateDeleteByQueryURLString(indexName))
 	return deleteByQueryProcess(c, url, query)
 }
 

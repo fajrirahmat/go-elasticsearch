@@ -79,7 +79,7 @@ func TestDeleteByQuery(t *testing.T) {
 			},
 		},
 	}
-	if !c.DeleteByQuery("gotest", query) {
+	if !c.DeleteByQuery([]string{"gotest"}, query) {
 		t.Fail()
 	}
 }
@@ -95,7 +95,106 @@ func TestDeleteByQuery_NotExist(t *testing.T) {
 			},
 		},
 	}
-	if c.DeleteByQuery("gotest", query) {
+	if c.DeleteByQuery([]string{"gotest"}, query) {
+		t.Fail()
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	c := New("http://localhost:9200")
+	script := map[string]interface{}{
+		"script": map[string]interface{}{
+			"inline": "ctx._source.message='Ini update yang baru loh ads'",
+		},
+	}
+	u := &UpdateDocument{
+		Body:         script,
+		DocumentID:   []string{"AWJnFD6ThMSe7XqCM5Vz"},
+		DocumentType: []string{"gotest"},
+		IndexName:    []string{"gotest"},
+	}
+
+	if !c.Update(u) {
+		t.Fail()
+	}
+}
+
+func TestMultiGet(t *testing.T) {
+	c := New("http://localhost:9200")
+	docs := []DocumentHeader{
+		DocumentHeader{
+			ID:    "AWJnFD6ThMSe7XqCM5Vz",
+			Index: "gotest",
+		},
+		DocumentHeader{
+			ID:    "AWJnFHaxhMSe7XqCM5V0",
+			Index: "gotest",
+		},
+	}
+	c.MultiGet(docs)
+}
+
+func TestGenerateBulkRequestBody(t *testing.T) {
+	pq := &BulkProcessRequest{
+		Items: []BulkItem{
+			BulkItem{
+				Process: INDEX,
+				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Source: map[string]interface{}{
+					"field1": "value1",
+					"field2": "value2",
+				},
+			},
+			BulkItem{
+				Process: DELETE,
+				Header:  BulkHeader{ID: "AWJnFD6ThMSe7XqCM5Vz", IndexName: "gotest", Type: "gotest"},
+			},
+		},
+	}
+	str, _ := generateBulkRequestBody(*pq)
+	if str == "" {
+		t.Fail()
+	}
+}
+
+func TestBulk(t *testing.T) {
+	c := New("http://localhost:9200")
+	pq := &BulkProcessRequest{
+		Items: []BulkItem{
+			BulkItem{
+				Process: INDEX,
+				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Source: map[string]interface{}{
+					"field1": "value1",
+					"field2": "value2",
+				},
+			},
+			BulkItem{
+				Process: DELETE,
+				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+			},
+		},
+	}
+	if c.Bulk(*pq) == nil {
+		t.Fail()
+	}
+}
+
+func TestBulk_UnknonwProcess(t *testing.T) {
+	c := New("http://localhost:9200")
+	pq := &BulkProcessRequest{
+		Items: []BulkItem{
+			BulkItem{
+				Process: "contek",
+				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Source: map[string]interface{}{
+					"field1": "value1",
+					"field2": "value2",
+				},
+			},
+		},
+	}
+	if c.Bulk(*pq) != nil {
 		t.Fail()
 	}
 }

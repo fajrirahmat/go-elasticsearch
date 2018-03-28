@@ -167,3 +167,20 @@ func (i *Context) CreateIndexWithIDAndVersion(indexName string, documentType str
 
 	return response, err
 }
+
+//Reindex reindex one index to another index
+//Reference: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/docs-reindex.html
+func (i *Context) Reindex(query map[string]interface{}) interface{} {
+	url := "/_reindex"
+	b, _ := json.Marshal(query)
+	request, _ := http.NewRequest("POST", url, bytes.NewBuffer(b))
+	resp, err := i.C.Do(request)
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	var response interface{}
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	return response
+}
