@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-//SearchResponse type response from elasticsearch. hits
-type SearchResponse struct {
+//GetResponse type response from elasticsearch. hits
+type GetResponse struct {
 	Index   string      `json:"_index"`
 	Type    string      `json:"_type"`
 	ID      string      `json:"_id"`
@@ -29,12 +29,12 @@ type DocumentHeader struct {
 
 //MultiGetResponse response for Multi Get
 type MultiGetResponse struct {
-	Docs []SearchResponse `json:"docs"`
+	Docs []GetResponse `json:"docs"`
 }
 
 //GetIndexWithTypeAndID get document index with index name, document type and document ID defined
-func (c *Context) GetIndexWithTypeAndID(indexName string, documentType string, documentID string) (SearchResponse, error) {
-	response := SearchResponse{}
+func (c *Context) GetIndexWithTypeAndID(indexName string, documentType string, documentID string) (GetResponse, error) {
+	response := GetResponse{}
 	url := "/" + indexName + "/" + documentType + "/" + documentID
 	resp, err := c.C.Get(url)
 	if err != nil {
@@ -46,8 +46,8 @@ func (c *Context) GetIndexWithTypeAndID(indexName string, documentType string, d
 }
 
 //GetIndexWithTypeAndIDAndRouting get document index with index name, document type and document ID defined
-func (c *Context) GetIndexWithTypeAndIDAndRouting(indexName string, documentType string, documentID string, routing string) (SearchResponse, error) {
-	response := SearchResponse{}
+func (c *Context) GetIndexWithTypeAndIDAndRouting(indexName string, documentType string, documentID string, routing string) (GetResponse, error) {
+	response := GetResponse{}
 	url := "/" + indexName + "/" + documentType + "/" + documentID + "?routing=" + routing
 	resp, err := c.C.Get(url)
 	if err != nil {

@@ -139,7 +139,7 @@ func TestGenerateBulkRequestBody(t *testing.T) {
 		Items: []BulkItem{
 			BulkItem{
 				Process: INDEX,
-				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Header:  HitsHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
 				Source: map[string]interface{}{
 					"field1": "value1",
 					"field2": "value2",
@@ -147,7 +147,7 @@ func TestGenerateBulkRequestBody(t *testing.T) {
 			},
 			BulkItem{
 				Process: DELETE,
-				Header:  BulkHeader{ID: "AWJnFD6ThMSe7XqCM5Vz", IndexName: "gotest", Type: "gotest"},
+				Header:  HitsHeader{ID: "AWJnFD6ThMSe7XqCM5Vz", IndexName: "gotest", Type: "gotest"},
 			},
 		},
 	}
@@ -163,7 +163,7 @@ func TestBulk(t *testing.T) {
 		Items: []BulkItem{
 			BulkItem{
 				Process: INDEX,
-				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Header:  HitsHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
 				Source: map[string]interface{}{
 					"field1": "value1",
 					"field2": "value2",
@@ -171,7 +171,7 @@ func TestBulk(t *testing.T) {
 			},
 			BulkItem{
 				Process: DELETE,
-				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Header:  HitsHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
 			},
 		},
 	}
@@ -186,7 +186,7 @@ func TestBulk_UnknonwProcess(t *testing.T) {
 		Items: []BulkItem{
 			BulkItem{
 				Process: "contek",
-				Header:  BulkHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
+				Header:  HitsHeader{ID: "BULK1", IndexName: "gotest", Type: "gotest"},
 				Source: map[string]interface{}{
 					"field1": "value1",
 					"field2": "value2",
@@ -197,4 +197,27 @@ func TestBulk_UnknonwProcess(t *testing.T) {
 	if c.Bulk(*pq) != nil {
 		t.Fail()
 	}
+}
+
+func TestSearch(t *testing.T) {
+	c := New("http://localhost:9200")
+	q := map[string]interface{}{
+		"query": map[string]interface{}{
+			"term": map[string]interface{}{
+				"_id": "AWJnFHaxhMSe7XqCM5V0",
+			},
+		},
+	}
+	s := &SearchRequest{
+		IndexName:    "gotest",
+		DocumentType: "gotest",
+		Query:        q,
+	}
+
+	response, _ := c.Search(s)
+	//assume the data with the index and _id has been in Elasticsearch
+	if response.Hits.Total == 0 {
+		t.Fail()
+	}
+
 }

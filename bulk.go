@@ -10,7 +10,7 @@ import (
 )
 
 //BulkHeader header of bulk item data
-type BulkHeader struct {
+type HitsHeader struct {
 	IndexName string `json:"_index"`
 	Type      string `json:"_type"`
 	ID        string `json:"_id"`
@@ -19,7 +19,7 @@ type BulkHeader struct {
 //BulkItem bulk item
 type BulkItem struct {
 	Process string
-	Header  BulkHeader
+	Header  HitsHeader
 	Source  map[string]interface{}
 }
 
