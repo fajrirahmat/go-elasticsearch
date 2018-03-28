@@ -20,7 +20,7 @@ Example:
     )
     
     func main() {
-    	c := client.New("http://localhost")
+    	c := client.New("http://localhost:9200")
     	query := map[string]interface{}{
     		"query": map[string]interface{}{
     			"term": map[string]interface{}{
